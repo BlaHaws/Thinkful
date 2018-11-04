@@ -1,0 +1,47 @@
+Drills
+1. What was the hottest day in our data set? Where was that?
+2. How many trips started at each station?
+3. What's the shortest trip that happened?
+4. What is the average trip duration, by end station?
+------------------------------------------------------------------------------------------
+
+Answers:
+1. Hottest day was Nov. 17, 2015, with a temperature of 134, at 94063.
+Query: select zip, date, max(maxtemperaturef) as max_temp from weather group by date, zip order by max_temp DESC
+
+2. 
+Station, Trip Count"2nd at Folsom"	"7464""2nd at South Park"	"7722""2nd at Townsend"	"14099""5th at Howard"	"5436""5th S at E. San Salvador St"	"19""5th St at E. San Salvador St"	"1""5th St at Folsom St"	"173""Adobe on Almaden"	"789""Arena Green / SAP Center"	"547""Beale at Market"	"7373""Broadway St at Battery St"	"5695""California Ave Caltrain Station"	"392""Castro Street and El Camino Real"	"1014""Charleston Park/ North Bayshore Area"	"343""Civic Center BART (7th at Market)"	"5043""Clay at Battery"	"4357""Commercial at Montgomery"	"4969""Cowper at University"	"788""Cyril Magnin St at Ellis St"	"69""Davis at Jackson"	"5240""Embarcadero at Bryant"	"7714""Embarcadero at Folsom"	"7820""Embarcadero at Sansome"	"13424""Embarcadero at Vallejo"	"4710""Evelyn Park and Ride"	"71""Franklin at Maple"	"2""Golden Gate at Polk"	"3309""Grant Avenue at Columbus Avenue"	"6735""Harry Bridges Plaza (Ferry Building)"	"16128""Howard at 2nd"	"7583""Japantown"	"945""Kaiser Hospital"	"147""Market at 10th"	"9937""Market at 4th"	"7337""Market at Sansome"	"10970""Mechanics Plaza (Market at Battery)"	"5613""Mezes"	"119""Mezes Park"	"7""Middlefield Light Rail Station"	"66""MLK Library"	"630""Mountain View Caltrain Station"	"2515""Mountain View City Hall"	"1291""Palo Alto Caltrain Station"	"1170""Park at Olive"	"276""Paseo de San Antonio"	"833""Post at Kearny"	"4348""Powell at Post (Union Square)"	"4488""Powell Street BART"	"6826""Redwood City Caltrain Station"	"695""Redwood City Medical Center"	"5""Redwood City Public Library"	"59""Rengstorff Avenue / California Street"	"42""Ryland Park"	"879""S. Market St at Park Ave"	"84""San Antonio Caltrain Station"	"611""San Antonio Shopping Center"	"559""San Francisco Caltrain (Townsend at 4th)"	"23591""San Francisco Caltrain 2 (330 Townsend)"	"22358""San Francisco City Hall"	"2195""San Jose City Hall"	"518""San Jose Civic Center"	"543""San Jose Diridon Caltrain Station"	"4035""San Mateo County Center"	"86""San Pedro Square"	"1215""San Salvador at 1st"	"540""Santa Clara at Almaden"	"1447""Santa Clara County Civic Center"	"420""Sequoia Hospital"	"15""SJSU - San Salvador at 9th"	"481""SJSU 4th at San Carlos"	"363""South Van Ness at Market"	"5398""Spear at Folsom"	"5113""St James Park"	"694""Stanford in Redwood City"	"428""Steuart at Market"	"13693""Temporary Transbay Terminal (Howard at Beale)"	"13111""Townsend at 7th"	"11170""University and Emerson"	"490""Washington at Kearny"	"2844""Yerba Buena Center of the Arts (3rd @ Howard)"	"3460"Query: select start_station, count(start_station) as station_count from trips group by start_station order by start_station ASC
+
+3.
+Trip IDDuration1011650601019313601120267601128671601118729601116337601240031601251962
+1281272
+1307209
+1272490
+1326559
+1327676
+1215074
+1165084
+1210244
+1185008
+1223132
+1217530
+1174367
+1206400
+116968660
+60
+60
+60
+60
+60
+60
+60
+60
+60
+60
+60
+60
+60
+60Query: select trip_id, min(duration) as min_duration from trips group by trip_id order by min_duration ASC
+
+4. 
+End Station, Average Duration"2nd at Folsom"	"557.05""2nd at South Park"	"531.59""2nd at Townsend"	"633.26""5th at Howard"	"583.57""5th S at E. San Salvador St"	"1767.00""5th St at E. San Salvador St"	"686.00""5th St at Folsom St"	"527.30""Adobe on Almaden"	"828.99""Arena Green / SAP Center"	"1426.48""Beale at Market"	"699.79""Broadway St at Battery St"	"756.49""California Ave Caltrain Station"	"1825.59""Castro Street and El Camino Real"	"802.50""Charleston Park/ North Bayshore Area"	"2370.23""Civic Center BART (7th at Market)"	"1033.10""Clay at Battery"	"856.80""Commercial at Montgomery"	"564.72""Cowper at University"	"1210.07""Cyril Magnin St at Ellis St"	"2926.22""Davis at Jackson"	"735.51""Embarcadero at Bryant"	"697.74""Embarcadero at Folsom"	"613.88""Embarcadero at Sansome"	"1400.38""Embarcadero at Vallejo"	"1372.67""Evelyn Park and Ride"	"739.01""Franklin at Maple"	"2068.60""Golden Gate at Polk"	"1277.80""Grant Avenue at Columbus Avenue"	"1478.68""Harry Bridges Plaza (Ferry Building)"	"918.88""Howard at 2nd"	"592.66""Japantown"	"969.83""Kaiser Hospital"	"670.30""Market at 10th"	"1044.93""Market at 4th"	"1022.00""Market at Sansome"	"612.93""Mechanics Plaza (Market at Battery)"	"731.37""Mezes"	"644.85""Mezes Park"	"257.00""Middlefield Light Rail Station"	"1199.87""MLK Library"	"1012.97""Mountain View Caltrain Station"	"996.88""Mountain View City Hall"	"651.16""Palo Alto Caltrain Station"	"1927.45""Park at Olive"	"1405.99""Paseo de San Antonio"	"724.44""Post at Kearny"	"744.22""Powell at Post (Union Square)"	"1631.98""Powell Street BART"	"991.01""Redwood City Caltrain Station"	"1147.67""Redwood City Medical Center"	"359.08""Redwood City Public Library"	"1186.70""Rengstorff Avenue / California Street"	"1658.50""Ryland Park"	"1223.40""S. Market St at Park Ave"	"1585.75""San Antonio Caltrain Station"	"1083.68""San Antonio Shopping Center"	"724.40""San Francisco Caltrain (Townsend at 4th)"	"723.11""San Francisco Caltrain 2 (330 Townsend)"	"609.49""San Francisco City Hall"	"1361.32""San Jose City Hall"	"1147.76""San Jose Civic Center"	"2372.58""San Jose Diridon Caltrain Station"	"599.52""San Mateo County Center"	"1008.03""San Pedro Square"	"816.38""San Salvador at 1st"	"1084.99""Santa Clara at Almaden"	"726.68""Santa Clara County Civic Center"	"1604.77""Sequoia Hospital"	"1633.50""SJSU - San Salvador at 9th"	"1227.62""SJSU 4th at San Carlos"	"967.13""South Van Ness at Market"	"1366.03""Spear at Folsom"	"608.99""St James Park"	"578.42""Stanford in Redwood City"	"1071.66""Steuart at Market"	"668.53""Temporary Transbay Terminal (Howard at Beale)"	"582.84""Townsend at 7th"	"666.21""University and Emerson"	"4710.90""Washington at Kearny"	"1061.89""Yerba Buena Center of the Arts (3rd @ Howard)"	"757.10"Query: select end_station, cast(avg(duration) as decimal(10,2)) as avg_duration from trips group by end_station order by end_station ASC
