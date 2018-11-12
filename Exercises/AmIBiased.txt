@@ -1,0 +1,12 @@
+1. You're testing advertising emails for a bathing suit company and you test one version of the email in February and the other in May.
+2. You open a clinic to treat anxiety and find that the people who visit show a higher rate of anxiety than the general population.
+3. You launch a new ad billboard based campaign and see an increase in website visits in the first week.
+4. You launch a loyalty program but see no change in visits in the first week.
+
+1. The bias here is that people are looking for a new bathing suit differently throughout the year. The views during February may have been higher because people were looking for a new suit, and lower in May because they already had a new suit. 
+
+2. The bias is that you are using the individuals that come in to a clinic that specializes in anxiety versus the general population. Because you are specifically treating anxiety, you are going to receive an extreme number of individuals with anxiety.
+
+3. The bias is that those who view a new billboard may be likely to inquire what the company is, without any intention of converting. People are curious.
+
+4. The bias is the time of expected return. A loyalty program generally uses a given number of purchases/visits before a reward is given. This will require time for individuals to use the program and view the benefit of the program, which will then in-turn hopefully increase the usage.
