@@ -1,0 +1,13 @@
+1. The Sith Lords are concerned that their recruiting slogan, "Give In to Your Anger," isn't very effective. Darth Vader develops an alternative slogan, "Together We Can Rule the Galaxy." They compare the slogans on two groups of 50 captured droids each. In one group, Emperor Palpatine delivers the "Anger" slogan. In the other, Darth Vader presents the "Together" slogan. 20 droids convert to the Dark Side after hearing Palpatine's slogan, while only 5 droids convert after hearing Vader's. The Sith's data scientist concludes that "Anger" is a more effective slogan and should continue to be used.
+
+
+The Problem: Review
+Recruitment of droids is low for the Sith Lords. Droids are used for various tasks, and decreased droid recruitment decreases productivity, speed, and number of completed tasks.
+
+The Potential Solution: Hypothesis
+Changing recruitment slogan will increase droid recruitment.
+
+The Method of Testing: Design, Analysis Plan, and Benchmarks
+Believing that droids may have a more pre-existing favourable opinion of Emperor Palpatine, the Emperor will deliever the "Anger" slogan to half of the groups captured, and the "Together" slogan to the other half. The variable of interest is the number of droids that convert to the dark side after hearing the new slogan. This is an A/B manipulation where one slogan is used versus the other slogan.
+
+We will compute the conversion rate of droids for a total of 1000 captured droids. If the conversion rate increases with the new slogan, the new slogan will be implemented as the standard slogan. If the conversion rate increases but within 1 standard deviation, the test will be continued for another 1000 droids. If the conversion rate does not increase, the current slogan will remain in place.
