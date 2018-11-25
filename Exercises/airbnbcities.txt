@@ -1,0 +1,5 @@
+1. SELECT price FROM listings GROUP BY price ORDER BY price DESC;
+
+2. SELECT count(neighbourhood_cleansed) FROM listings GROUP BY neighbourhood_cleansed ORDER BY neighbourhood_cleansed DESC;
+
+3. select count(listing_date), listing_date from calendar GROUP BY listing_date ORDER BY listing_date DESC
