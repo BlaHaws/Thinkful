@@ -1,0 +1,29 @@
+cntry	idno	year	tvtot	ppltrst	pplfair	pplhlp	happy	sclmeet	sclact	gndr	agea	partner
+
+cntry = Country
+idno = Respondent's ID number
+year = ESS Round
+tvtot = TV watching, total time on average weekday
+ppltrst = Most people can be trusted or you can't be too careful
+pplfair = Most people try to take advantage of you, or try to be fair
+pplhlp = Most of the time people helpful or mostly looking out for themselves
+happy = How happy are you
+sclmeet = How often socially meet with friends, relatives or colleagues
+sclact = Take part in social activities compared to others of same age
+gndr = Gender
+agea = Age of respondent, calculated
+partner = Lives with husband/wife/partner at household grid
+
+cntry - nominal
+idno - nominal
+year - ratio
+tvtot - interval
+ppltrst - interval
+pplfair - interval
+pplhlp - interval
+happy - interval
+sclmeet - interval
+sclact - interval
+gndr - nominal
+agea - ratio
+partner - nominal
