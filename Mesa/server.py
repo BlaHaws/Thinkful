@@ -30,7 +30,7 @@ def mapmodel_draw(agent):
 	
 	if agent is None:
 		return
-	portrayal = {"Shape": "circle", "r": 0.5, "Filled": "true", "Layer": 0}
+	portrayal = {"Shape": "circle", "r": 0.8, "Filled": "true", "Layer": 0}
 	
 	if agent.type == "Terrorist":
 		portrayal["Color"] = ["#FF0000", "#FF9999"]

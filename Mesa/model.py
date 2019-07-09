@@ -12,30 +12,36 @@ from t_agent import TerroristAgent
 from c_agent import CivilianAgent
 from m_agent import MilitaryAgent
 from dqn_tf import DeepQNetwork
-from hivemind import HiveMind
+from hivemind_ter import HiveMindTer
+from hivemind_mil import HiveMindMil
+from gen_agents import GenAgents
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 class MapModel(Model):
 	
 	def __init__(self, density=.1, height=50, width=50, map_size="Large", troop_size=10000,
-				hive=HiveMind(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 9, 1),
-								n_actions=5, mem_size=6000, batch_size=1)):
-		
+				t_hive=HiveMindTer(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 9, 1),
+								n_actions=4, mem_size=4000, batch_size=1),
+				m_hive=HiveMindMil(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 9, 1),
+								n_actions=3, mem_size=4000, batch_size=1)):
+
 		self.height = height
 		self.width = width
 		self.density = density
 		self.map_size = map_size
+		self.gen_agents = GenAgents()
 		
 		self.schedule = RandomActivation(self)
 		self.grid = MultiGrid(height, width, False)
 		
-		self.score = 0
+		self.terror_score = 0
+		self.civilian_score = 0
 		
-		self.pred_agents = self.generate_pred_agents(10000)
+		self.pred_agents = self.gen_agents.generate_pred_agents(10000)
 		self.pred_model = self.train_model(self.pred_agents)
-		del self.pred_agents
-		self.hive = hive
+		self.t_hive = t_hive
+		self.m_hive = m_hive
 		
 		self.metro_size = 50#000
 		self.metro_civ = int(self.metro_size * (1 - self.density))
@@ -64,22 +70,22 @@ class MapModel(Model):
 			self.village3_loc = {"X": 45, "Y": 45}
 			self.basecamp_loc = {"X": 35, "Y": 10}
 			self.outpost_loc = {"X": 30, "Y": 20}
-			self.metro_t_agents = self.generate_t_agents(self.metro_ter)
-			self.metro_c_agents = self.generate_civ_agents(self.metro_civ)
-			self.city1_t_agents = self.generate_t_agents(self.city_ter)
-			self.city1_c_agents = self.generate_civ_agents(self.city_civ)
-			self.city2_t_agents = self.generate_t_agents(self.city_ter)
-			self.city2_c_agents = self.generate_civ_agents(self.city_civ)
-			self.village1_t_agents = self.generate_t_agents(self.village_ter)
-			self.village1_c_agents = self.generate_civ_agents(self.village_civ)
-			self.village2_t_agents = self.generate_t_agents(self.village_ter)
-			self.village2_c_agents = self.generate_civ_agents(self.village_civ)
-			self.village3_t_agents = self.generate_t_agents(self.village_ter)
-			self.village3_c_agents = self.generate_civ_agents(self.village_civ)
-			self.basecamp_agents = self.generate_mil_agents(self.basecamp)
-			self.outpost_agents = self.generate_mil_agents(self.outpost)
+			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
+			self.metro_c_agents = self.gen_agents.generate_civ_agents(self.metro_civ)
+			self.city1_t_agents = self.gen_agents.generate_ter_agents(self.city_ter)
+			self.city1_c_agents = self.gen_agents.generate_civ_agents(self.city_civ)
+			self.city2_t_agents = self.gen_agents.generate_ter_agents(self.city_ter)
+			self.city2_c_agents = self.gen_agents.generate_civ_agents(self.city_civ)
+			self.village1_t_agents = self.gen_agents.generate_ter_agents(self.village_ter)
+			self.village1_c_agents = self.gen_agents.generate_civ_agents(self.village_civ)
+			self.village2_t_agents = self.gen_agents.generate_ter_agents(self.village_ter)
+			self.village2_c_agents = self.gen_agents.generate_civ_agents(self.village_civ)
+			self.village3_t_agents = self.gen_agents.generate_ter_agents(self.village_ter)
+			self.village3_c_agents = self.gen_agents.generate_civ_agents(self.village_civ)
+			self.basecamp_agents = self.gen_agents.generate_mil_agents(self.basecamp)
+			self.outpost_agents = self.gen_agents.generate_mil_agents(self.outpost)
 			for x in range(len(self.metro_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.metro_loc["X"], self.metro_loc["Y"]))
 			for x in range(len(self.metro_c_agents)):
@@ -87,7 +93,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.metro_loc["X"], self.metro_loc["Y"]))
 			for x in range(len(self.city1_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.city1_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.city1_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city1_loc["X"], self.city1_loc["Y"]))
 			for x in range(len(self.city1_c_agents)):
@@ -95,7 +101,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city1_loc["X"], self.city1_loc["Y"]))
 			for x in range(len(self.city2_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.city2_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.city2_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city2_loc["X"], self.city2_loc["Y"]))
 			for x in range(len(self.city2_c_agents)):
@@ -103,7 +109,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city2_loc["X"], self.city2_loc["Y"]))
 			for x in range(len(self.village1_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.village1_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.village1_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.village1_loc["X"], self.village1_loc["Y"]))
 			for x in range(len(self.village1_c_agents)):
@@ -111,7 +117,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.village1_loc["X"], self.village1_loc["Y"]))
 			for x in range(len(self.village2_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.village2_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.village2_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.village2_loc["X"], self.village2_loc["Y"]))
 			for x in range(len(self.village2_c_agents)):
@@ -119,7 +125,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.village2_loc["X"], self.village2_loc["Y"]))
 			for x in range(len(self.village3_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.village3_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.village3_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.village3_loc["X"], self.village3_loc["Y"]))
 			for x in range(len(self.village3_c_agents)):
@@ -133,7 +139,24 @@ class MapModel(Model):
 			for x in range(len(self.outpost_agents)):
 				a = MilitaryAgent('m'+str(x), self, self.outpost_agents[x:x+1])
 				self.schedule.add(a)
-				self.grid.place_agent(a, (self.outpost_loc["X"], self.outpost_loc["Y"]))		
+				self.grid.place_agent(a, (self.outpost_loc["X"], self.outpost_loc["Y"]))
+			del self.metro_c_agents
+			del self.metro_t_agents
+			del self.city1_c_agents
+			del self.city1_t_agents
+			del self.city2_c_agents
+			del self.city2_t_agents
+			del self.village1_c_agents
+			del self.village1_t_agents
+			del self.village2_c_agents
+			del self.village2_t_agents
+			del self.village3_c_agents
+			del self.village3_t_agents
+			del self.basecamp
+			del self.outpost
+			del self.basecamp_agents
+			del self.outpost_agents
+			
 		elif self.map_size == "Medium":
 			#self.height = 50
 			#self.width = 50
@@ -141,15 +164,15 @@ class MapModel(Model):
 			self.city1_loc = {"X": 20, "Y": 20}
 			self.city2_loc = {"X": 45, "Y": 25}
 			self.basecamp_loc = {"X": 45, "Y": 10}
-			self.metro_t_agents = self.generate_t_agents(self.metro_ter)
-			self.metro_c_agents = self.generate_civ_agents(self.metro_civ)
-			self.city1_t_agents = self.generate_t_agents(self.city_ter)
-			self.city1_c_agents = self.generate_civ_agents(self.city_civ)
-			self.city2_t_agents = self.generate_t_agents(self.city_ter)
-			self.city2_c_agents = self.generate_civ_agents(self.city_civ)
-			self.basecamp_agents = self.generate_mil_agents(self.troop_size)
+			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
+			self.metro_c_agents = self.gen_agents.generate_civ_agents(self.metro_civ)
+			self.city1_t_agents = self.gen_agents.generate_ter_agents(self.city_ter)
+			self.city1_c_agents = self.gen_agents.generate_civ_agents(self.city_civ)
+			self.city2_t_agents = self.gen_agents.generate_ter_agents(self.city_ter)
+			self.city2_c_agents = self.gen_agents.generate_civ_agents(self.city_civ)
+			self.basecamp_agents = self.gen_agents.generate_mil_agents(self.troop_size)
 			for x in range(len(self.metro_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.metro_loc["X"], self.metro_loc["Y"]))
 			for x in range(len(self.metro_c_agents)):
@@ -157,7 +180,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.metro_loc["X"], self.metro_loc["Y"]))
 			for x in range(len(self.city1_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.city1_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.city1_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city1_loc["X"], self.city1_loc["Y"]))
 			for x in range(len(self.city1_c_agents)):
@@ -165,7 +188,7 @@ class MapModel(Model):
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city1_loc["X"], self.city1_loc["Y"]))
 			for x in range(len(self.city2_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.city2_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.city2_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.city2_loc["X"], self.city2_loc["Y"]))
 			for x in range(len(self.city2_c_agents)):
@@ -176,16 +199,26 @@ class MapModel(Model):
 				a = MilitaryAgent('m'+str(x), self, self.basecamp_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.basecamp_loc["X"], self.basecamp_loc["Y"]))
+				
+			del self.metro_c_agents
+			del self.metro_t_agents
+			del self.city1_c_agents
+			del self.city1_t_agents
+			del self.city2_c_agents
+			del self.city2_t_agents
+			del self.basecamp
+			del self.basecamp_agents
+			
 		elif self.map_size == "Small":
 			#self.height = 20
 			#self.width = 20
-			self.metro_loc = {"X": 10, "Y": 10}
-			self.basecamp_loc = {"X": 15, "Y": 5}
-			self.metro_t_agents = self.generate_t_agents(self.metro_ter)
-			self.metro_c_agents = self.generate_civ_agents(self.metro_civ)
-			self.basecamp_agents = self.generate_mil_agents(self.troop_size)
+			self.metro_loc = {"X": 25, "Y": 25}
+			self.basecamp_loc = {"X": 45, "Y": 10}
+			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
+			self.metro_c_agents = self.gen_agents.generate_civ_agents(self.metro_civ)
+			self.basecamp_agents = self.gen_agents.generate_mil_agents(self.troop_size)
 			for x in range(len(self.metro_t_agents)):
-				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1], self.pred_model, self.hive)
+				a = TerroristAgent('t'+str(x), self, self.metro_t_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.metro_loc["X"], self.metro_loc["Y"]))
 			for x in range(len(self.metro_c_agents)):
@@ -196,30 +229,69 @@ class MapModel(Model):
 				a = MilitaryAgent('m'+str(x), self, self.basecamp_agents[x:x+1])
 				self.schedule.add(a)
 				self.grid.place_agent(a, (self.basecamp_loc["X"], self.basecamp_loc["Y"]))
+				
+			del self.metro_c_agents
+			del self.metro_t_agents
+			del self.basecamp
+			del self.basecamp_agents
 		
-		self.update_score()		
+		del self.pred_agents
+		del self.metro_size
+		del self.metro_civ
+		del self.metro_ter
+		del self.city_civ
+		del self.city_ter
+		del self.village_civ
+		del self.village_ter
+		
+		self.set_terror_score()
+		self.set_civil_score()
+
 		self.running = True
 
 	def step(self):
 		self.schedule.step()
-		#self.update_score()
-		print(self.score)
 		
-	def update_score(self):
-		t_count = 0
-		c_count = 0
-		m_count = 0
+	def get_agent_count(self, type):
+		count = 0
 		for agent in self.schedule.agents:
-			if agent.type == 'Terrorist':
-				t_count += 1
-			elif agent.type == 'Civilian':
-				c_count += 1
-			elif agent.type == 'Military':
-				m_count += 1
+			if agent.type == type:
+				count += 1
+
+		return count
+		
+	def get_agent_list(self, type):
+		agents = []
+		for agent in self.schedule.agents:
+			if agent.type == type:
+				agents.append(agent)
+				
+		return agents
+
+	def set_terror_score(self):
+		t_count = self.get_agent_count('Terrorist')
+		c_count = self.get_agent_count('Civilian')
+		m_count = self.get_agent_count('Military')
+		
 		if t_count >= c_count:
-			self.score = t_count - (c_count/2) - m_count
+			self.terror_score = t_count - (c_count/2) - m_count
 		else:
-			self.score = t_count - c_count - m_count
+			self.terror_score = t_count - c_count - m_count
+			
+	def set_civil_score(self):
+		t_count = self.get_agent_count('Terrorist')
+		c_count = self.get_agent_count('Civilian')
+		m_count = self.get_agent_count('Military')
+		
+		self.civil_score = c_count + (m_count / 2) - t_count
+		
+	def get_same_square_agents(self, x_pos, y_pos):
+		agents = []
+		for agent in self.schedule.agents:
+			if agent.pos[0] == x_pos and agent.pos[1] == y_pos:
+				agents.append(agent)
+
+		return agents
 
 	def train_model(self, agents):
 		rfg = ensemble.RandomForestRegressor()
@@ -229,124 +301,3 @@ class MapModel(Model):
 		rfg.fit(X, Y)
 
 		return rfg
-
-	def get_truncated_normal(self, mean=0, sd=1, low=0, upp=10):
-		return truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
-
-	def generate_t_agents(self, agent_size):
-		agents = pd.DataFrame()
-		ages = np.round(np.random.normal(36, 5, agent_size), 0)
-		males = np.zeros((int(agent_size * .9),), dtype=int)
-		females = np.ones((int(agent_size - len(males)),), dtype=int)
-		genders = np.concatenate((males, females), axis=None)
-		reli = np.zeros((int(agent_size * .8),), dtype=int)
-		relo = np.ones((int(agent_size - len(reli)),), dtype=int)
-		religions = np.concatenate((reli, relo), axis=None)
-		np.random.shuffle(genders)
-		np.random.shuffle(religions)
-		X1 = self.get_truncated_normal(mean=.25, sd=.25, low=0, upp=1)
-		X2 = self.get_truncated_normal(mean=.5, sd=.15, low=0, upp=1)
-		X3 = self.get_truncated_normal(mean=.35, sd=.3, low=0, upp=1)
-		X4 = self.get_truncated_normal(mean=.2, sd=.35, low=0, upp=1)
-		X5 = self.get_truncated_normal(mean=.5, sd=.4, low=0, upp=1)
-		X6 = self.get_truncated_normal(mean=.15, sd=.4, low=0, upp=1)
-		agr_bhv = X1.rvs(int(agent_size))
-		rel_fnt = X2.rvs(int(agent_size))
-		rel_conv = X6.rvs(int(agent_size))
-		hst_twd_for = X3.rvs(int(agent_size))
-		lvl_rct_act = X4.rvs(int(agent_size))
-		crt_agr_lvl = X5.rvs(int(agent_size))
-		prob_threat = np.zeros((int(agent_size),), dtype=float)
-
-		agents['age'] = ages.astype(int)
-		agents['gender'] = genders
-		agents['religion'] = religions
-		agents['agr_bhv'] = agr_bhv
-		agents['rel_fnt'] = rel_fnt
-		agents['rel_conv'] = rel_conv
-		agents['hst_twd_for'] = hst_twd_for
-		agents['lvl_rct_act'] = lvl_rct_act
-		agents['crt_agr_lvl'] = crt_agr_lvl
-		agents['prob_threat'] = prob_threat
-
-		return agents
-
-	def generate_pred_agents(self, agent_size):
-		agents = pd.DataFrame()
-
-		ages = np.round(np.random.normal(36, 5, agent_size), 0)
-		males = np.zeros((int(agent_size * .9),), dtype=int)
-		females = np.ones((int(agent_size * .1),), dtype=int)
-		genders = np.concatenate((males, females), axis=None)
-		reli = np.zeros((int(agent_size * .8),), dtype=int)
-		relo = np.ones((int(agent_size * .2),), dtype=int)
-		religions = np.concatenate((reli, relo), axis=None)
-		np.random.shuffle(genders)
-		np.random.shuffle(religions)
-		X1 = self.get_truncated_normal(mean=.25, sd=.25, low=0, upp=1)
-		X2 = self.get_truncated_normal(mean=.5, sd=.15, low=0, upp=1)
-		X3 = self.get_truncated_normal(mean=.35, sd=.3, low=0, upp=1)
-		X4 = self.get_truncated_normal(mean=.2, sd=.35, low=0, upp=1)
-		X5 = self.get_truncated_normal(mean=.5, sd=.4, low=0, upp=1)
-		X6 = self.get_truncated_normal(mean=.15, sd=.4, low=0, upp=1)
-		agr_bhv = X1.rvs(int(agent_size))
-		rel_fnt = X2.rvs(int(agent_size))
-		rel_conv = X6.rvs(int(agent_size))
-		hst_twd_for = X3.rvs(int(agent_size))
-		lvl_rct_act = X4.rvs(int(agent_size))
-		crt_agr_lvl = X5.rvs(int(agent_size))
-		prob_threat = X2.rvs(int(agent_size))
-
-		agents['age'] = ages.astype(int)
-		agents['gender'] = genders
-		agents['religion'] = religions
-		agents['agr_bhv'] = agr_bhv
-		agents['rel_fnt'] = rel_fnt
-		agents['rel_conv'] = rel_conv
-		agents['hst_twd_for'] = hst_twd_for
-		agents['lvl_rct_act'] = lvl_rct_act
-		agents['crt_agr_lvl'] = crt_agr_lvl
-		agents['prob_threat'] = prob_threat
-
-		return agents
-
-	def generate_mil_agents(self, agent_size):
-		agents = pd.DataFrame()
-		
-		agents['thing'] = np.zeros((int(agent_size),), dtype=int)
-		
-		return agents
-
-	def generate_civ_agents(self, agent_size):
-		agents = pd.DataFrame()
-		
-		ages = np.round(np.random.normal(36, 5, agent_size), 0)
-		males = np.zeros((int(agent_size * .9),), dtype=int)
-		females = np.ones((int(agent_size - len(males)),), dtype=int)
-		genders = np.concatenate((males, females), axis=None)
-		reli = np.zeros((int(agent_size * .8),), dtype=int)
-		relo = np.ones((int(agent_size - len(reli)),), dtype=int)
-		religions = np.concatenate((reli, relo), axis=None)
-		np.random.shuffle(genders)
-		np.random.shuffle(religions)
-		X1 = self.get_truncated_normal(mean=.25, sd=.3, low=0, upp=1)
-		agr_bhv = X1.rvs(int(agent_size))
-		rel_fnt = X1.rvs(int(agent_size))
-		rel_conv = X1.rvs(int(agent_size))
-		hst_twd_for = X1.rvs(int(agent_size))
-		lvl_rct_act = X1.rvs(int(agent_size))
-		crt_agr_lvl = X1.rvs(int(agent_size))
-		prob_threat = np.zeros((int(agent_size),), dtype=float)
-
-		agents['ages'] = ages.astype(int)
-		agents['gender'] = genders
-		agents['religion'] = religions
-		agents['agr_bhv'] = agr_bhv
-		agents['rel_fnt'] = rel_fnt
-		agents['rel_conv'] = rel_conv
-		agents['hst_twd_for'] = hst_twd_for
-		agents['lvl_rct_act'] = lvl_rct_act
-		agents['crt_agr_lvl'] = crt_agr_lvl
-		agents['prob_threat'] = prob_threat
-	  
-		return agents

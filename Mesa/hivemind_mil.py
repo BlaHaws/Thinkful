@@ -2,10 +2,10 @@ from dqn_tf import DeepQNetwork
 import os
 import numpy as np
 
-class HiveMindTer(object):
+class HiveMindMil(object):
 	def __init__(self, alpha, gamma, mem_size, n_actions, epsilon, 
-				batch_size, replace_target=5000, input_dims=(1,10,1), 
-				q_next_dir='tmp/ter/q_next', q_eval_dir='tmp/ter/q_eval'):
+				batch_size, replace_target=5000, input_dims=(9), 
+				q_next_dir='tmp/mil/q_next', q_eval_dir='tmp/mil/q_eval'):
 		
 		self.n_actions = n_actions
 		self.action_space = [ i for i in range(self.n_actions)]
@@ -16,9 +16,9 @@ class HiveMindTer(object):
 		self.mem_cntr = 0
 		self. replace_target = replace_target
 		self.q_next = DeepQNetwork(alpha, n_actions, input_dims=input_dims, 
-									name='ter_q_next', chkpt_dir=q_next_dir)
+									name='q_next', chkpt_dir=q_next_dir)
 		self.q_eval = DeepQNetwork(alpha, n_actions, input_dims=input_dims,
-									name='ter_q_eval', chkpt_dir=q_eval_dir)
+									name='q_eval', chkpt_dir=q_eval_dir)
 		self.state_memory = np.zeros((self.mem_size, *input_dims))
 		self.new_state_memory = np.zeros((self.mem_size, *input_dims))
 		self.action_memory = np.zeros((self.mem_size, self.n_actions), dtype=np.int8)
