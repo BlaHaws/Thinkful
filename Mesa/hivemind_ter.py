@@ -53,7 +53,7 @@ class HiveMindTer(object):
 		batch = np.random.choice(max_mem, self.batch_size)
 		state_batch = self.state_memory[batch]
 		action_batch = self.action_memory[batch]
-		action_values = np.array([0, 1, 2, 3], dtype=np.int8)
+		action_values = np.array([0, 1, 2, 3, 4], dtype=np.int8)
 		action_indices = np.dot(action_batch, action_values)
 		reward_batch = self.reward_memory[batch]
 		new_state_batch = self.new_state_memory[batch]

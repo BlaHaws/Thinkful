@@ -6,10 +6,9 @@ class MilitaryAgent(Agent):
 	def __init__(self, unique_id, model, agent):
 		super().__init__(unique_id, model)
 		
-		self.pos = (0, 0)
 		self.wounded = False
 		self.wounded_count = 0
-		self.state = [self.model.terror_score, self.model.civilian_score, self.pos[0], self.pos[1],
+		self.state = [self.model.terror_score, self.model.civilian_score, 0, 0,
 					self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
 					self.model.get_agent_count('Military')]
 		self.type = "Military"
@@ -122,7 +121,7 @@ class MilitaryAgent(Agent):
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			c_score_ = self.model.civilian_score
-			state_ = np.array([self.model.terror_score,	self.model.civilian_score,
+			state_ = np.array([self.model.terror_score,	self.model.civilian_score, self.pos[0], self.pos[1],
 						self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
 						self.model.get_agent_count('Military')])
 			self.state = state_

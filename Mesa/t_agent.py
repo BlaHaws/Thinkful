@@ -6,7 +6,6 @@ class TerroristAgent(Agent):
 	def __init__(self, unique_id, model, agent):
 		super().__init__(unique_id, model)
 		
-		self.pos = (0, 0)
 		self.wounded = False
 		self.wounded_count = 0
 		self.age = int(agent.age)
@@ -23,7 +22,7 @@ class TerroristAgent(Agent):
 		self.type = 'Terrorist'
 		self.state = [self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
 						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
-						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
+						self.model.civilian_score, 0, 0, self.model.get_agent_count('Terrorist'), 
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')]
 
 	def step(self):
@@ -182,4 +181,19 @@ class TerroristAgent(Agent):
 			Find the nearest military agent and move toward.
 			'''
 		elif action == 4:
-			pass
+			state = np.array(self.state).reshape((1, 15, 1))
+			t_score = self.model.terror_score
+			self.model.set_terror_score()
+			self.model.set_civil_score()
+			t_score_ = self.model.terror_score
+			state_ = np.array([self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
+						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
+						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
+						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')])
+			self.state = state_
+			state_ = state_.reshape((1, 15, 1))
+			if t_score >= t_score_:
+				reward = -1
+			else:
+				reward = 1
+			self.model.t_hive.store_transition(state, action, reward, state_)

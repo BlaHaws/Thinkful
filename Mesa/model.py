@@ -53,11 +53,11 @@ class MapModel(Model):
 		self.t_epsilon = self.t_hive.epsilon
 		self.m_epsilon = self.m_hive.epsilon
 		
-		self.metro_size = 10000
+		self.metro_size = 10#000
 		self.metro_civ = int(self.metro_size * (1 - self.density))
 		self.metro_ter = int(self.metro_size * self.density)
 		
-		self.city_size = 1000
+		self.city_size = 10#00
 		self.city_civ = int(self.city_size * (1 - self.density))
 		self.city_ter = int(self.city_size * self.density)
 		
@@ -68,8 +68,6 @@ class MapModel(Model):
 		self.troop_size = troop_size
 		
 		if self.map_size == "Large":
-			#self.height = 50
-			#self.width = 50
 			self.basecamp = int(self.troop_size * .8)
 			self.outpost = int(self.troop_size * .2)
 			self.metro_loc = {"X": 25, "Y": 25}
@@ -168,8 +166,6 @@ class MapModel(Model):
 			del self.outpost_agents
 			
 		elif self.map_size == "Medium":
-			#self.height = 50
-			#self.width = 50
 			self.metro_loc = {"X": 25, "Y": 25}
 			self.city1_loc = {"X": 20, "Y": 20}
 			self.city2_loc = {"X": 45, "Y": 25}
@@ -220,8 +216,6 @@ class MapModel(Model):
 			del self.basecamp_agents
 			
 		elif self.map_size == "Small":
-			#self.height = 20
-			#self.width = 20
 			self.metro_loc = {"X": 25, "Y": 25}
 			self.basecamp_loc = {"X": 30, "Y": 20}
 			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
@@ -258,7 +252,6 @@ class MapModel(Model):
 		self.set_civil_score()
 
 		self.running = True
-		print(self.t_epsilon, self.m_epsilon)
 
 	def step(self):
 		if self.get_agent_count('Terrorist') >= 1:
@@ -271,8 +264,6 @@ class MapModel(Model):
 				self.m_hive.save_models()
 		else:
 			self.running = False
-			
-		print(self.t_epsilon, self.m_epsilon)
 
 	def get_agent_count(self, type):
 		count = 0
