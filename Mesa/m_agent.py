@@ -15,8 +15,7 @@ class MilitaryAgent(Agent):
 		
 	def step(self):
 		if not self.wounded:
-			self.choose_action(self.model.m_hive.choose_action(self.state))
-			pass
+			self.choose_action(self.model.m_hive.choose_action(np.expand_dims(np.array(self.state).reshape((1, 5, 1)), 1)))
 		else:
 			if self.wounded_count > 0:
 				self.wounded_count -= 1
@@ -31,9 +30,10 @@ class MilitaryAgent(Agent):
 			state = np.array(self.state).reshape((1, 5, 1))
 			c_score = self.model.civilian_score
 			agents = self.model.get_agent_list('Terrorist')
-			nearest = self.model.find_nearest_agent(self, agents)
-			x, y = self.model.move_toward_nearest(self, nearest)
-			self.model.grid.move_agent(self, (self.pos[0]+x, self.pos[1]+y))
+			if len(agents) > 0:
+				nearest = self.model.find_nearest_agent(self, agents)
+				x, y = self.model.move_toward_nearest(self, nearest)
+				self.model.grid.move_agent(self, (self.pos[0]+x, self.pos[1]+y))
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			c_score_ = self.model.civilian_score

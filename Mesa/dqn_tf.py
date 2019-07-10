@@ -4,7 +4,7 @@ import tensorflow as tf
 
 class DeepQNetwork(object):
 	def __init__(self, lr, n_actions, name, fc1_dims=256,
-				 input_dims=(1,10,1), chkpt_dir='tmp/dqn'):
+				 input_dims=(1,13), chkpt_dir='tmp/dqn'):
 		self.lr = lr
 		self.name = name
 		self.n_actions = n_actions

@@ -43,8 +43,8 @@ class MapModel(Model):
 		self.pred_model = self.train_model(self.pred_agents)
 		self.t_hive = t_hive
 		self.m_hive = m_hive
-		self.t_epsilon = 1
-		self.m_epsilon = 1
+		self.t_epsilon = 0
+		self.m_epsilon = 0
 		self.datacollector = DataCollector({"Terrorist Epsilon": "t_epsilon", "Military Epsilon": "m_epsilon"})
 
 		if self.load_checkpoints:
@@ -258,10 +258,10 @@ class MapModel(Model):
 		self.running = True
 
 	def step(self):
-		if self.schedule.steps < 50:
+		if self.schedule.steps < 100:
 			self.schedule.step()
 			self.datacollector.collect(self)
-			if self.schedule.steps % 10 == 0:
+			if self.schedule.steps % 5 == 0:
 				self.t_hive.save_models()
 				self.m_hive.save_models()
 				
