@@ -21,9 +21,9 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 class MapModel(Model):
 	
 	def __init__(self, density=.1, height=50, width=50, map_size="Large", troop_size=10000,
-				t_hive=HiveMindTer(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 13, 1),
+				t_hive=HiveMindTer(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 15, 1),
 								n_actions=5, mem_size=4000, batch_size=1),
-				m_hive=HiveMindMil(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 5, 1),
+				m_hive=HiveMindMil(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 7, 1),
 								n_actions=4, mem_size=4000, batch_size=1)):
 
 		self.height = height

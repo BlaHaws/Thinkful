@@ -38,7 +38,7 @@ class MilitaryAgent(Agent):
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			c_score_ = self.model.civilian_score
-			state_ = np.array([self.model.terror_score,	self.model.civilian_score,
+			state_ = np.array([self.model.terror_score,	self.model.civilian_score, self.pos[0], self.pos[1],
 						self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
 						self.model.get_agent_count('Military')])
 			self.state = state_
@@ -65,7 +65,7 @@ class MilitaryAgent(Agent):
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			c_score_ = self.model.civilian_score
-			state_ = np.array([self.model.terror_score,	self.model.civilian_score,
+			state_ = np.array([self.model.terror_score,	self.model.civilian_score, self.pos[0], self.pos[1],
 						self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
 						self.model.get_agent_count('Military')])
 			self.state = state_
@@ -101,7 +101,7 @@ class MilitaryAgent(Agent):
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			c_score_ = self.model.civilian_score
-			state_ = np.array([self.model.terror_score,	self.model.civilian_score,
+			state_ = np.array([self.model.terror_score,	self.model.civilian_score, self.pos[0], self.pos[1],
 						self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
 						self.model.get_agent_count('Military')])
 			self.state = state_
@@ -117,4 +117,18 @@ class MilitaryAgent(Agent):
 			5% to kill civilian agent
 			'''
 		elif self.action == 3:
-			pass
+			state = np.array(self.state).reshape((1, 7, 1))
+			c_score = self.model.civilian_score
+			self.model.set_terror_score()
+			self.model.set_civil_score()
+			c_score_ = self.model.civilian_score
+			state_ = np.array([self.model.terror_score,	self.model.civilian_score,
+						self.model.get_agent_count('Terrorist'), self.model.get_agent_count('Civilian'),
+						self.model.get_agent_count('Military')])
+			self.state = state_
+			state_ = state_.reshape((1, 7, 1))
+			if c_score >= c_score_:
+				reward = -1
+			else:
+				reward = 1
+			self.model.m_hive.store_transition(state, action, reward, state_)
