@@ -270,6 +270,7 @@ class MapModel(Model):
 			print(self.m_hive.epsilon)
 		else:
 			self.running = False
+
 	def get_agent_count(self, type):
 		count = 0
 		for agent in self.schedule.agents:
