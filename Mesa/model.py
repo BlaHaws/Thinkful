@@ -266,8 +266,6 @@ class MapModel(Model):
 			if self.schedule.steps % 5 == 0:
 				self.t_hive.save_models()
 				self.m_hive.save_models()
-				
-			print(self.m_hive.epsilon)
 		else:
 			self.running = False
 
@@ -302,7 +300,7 @@ class MapModel(Model):
 		c_count = self.get_agent_count('Civilian')
 		m_count = self.get_agent_count('Military')
 		
-		self.civil_score = c_count + (m_count / 2) - t_count
+		self.civilian_score = c_count + (m_count / 2) - t_count
 		
 	def get_same_square_agents(self, x_pos, y_pos):
 		agents = []
