@@ -5,7 +5,7 @@ import numpy as np
 
 class HiveMindTer(object):
 	def __init__(self, alpha, gamma, mem_size, n_actions, epsilon, 
-				batch_size, replace_target=5000, input_dims=(1, 13), 
+				batch_size, replace_target=5000, input_dims=(1, 15, 1), 
 				q_next_dir='tmp/ter/q_next', q_eval_dir='tmp/ter/q_eval'):
 		
 		self.n_actions = n_actions

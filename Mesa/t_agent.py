@@ -6,6 +6,7 @@ class TerroristAgent(Agent):
 	def __init__(self, unique_id, model, agent):
 		super().__init__(unique_id, model)
 		
+		self.pos = (0, 0)
 		self.wounded = False
 		self.wounded_count = 0
 		self.age = int(agent.age)
@@ -22,13 +23,13 @@ class TerroristAgent(Agent):
 		self.type = 'Terrorist'
 		self.state = [self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
 						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
-						self.model.civilian_score, self.model.get_agent_count('Terrorist'), 
+						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')]
 
 	def step(self):
 		self.grow()
 		if not self.wounded:
-			self.choose_action(self.model.t_hive.choose_action(np.expand_dims(np.array(self.state).reshape((1, 13, 1)), 1)))
+			self.choose_action(self.model.t_hive.choose_action(np.expand_dims(np.array(self.state).reshape((1, 15, 1)), 1)))
 		else:
 			if self.wounded_count > 0:
 				self.wounded_count -= 1
@@ -63,7 +64,7 @@ class TerroristAgent(Agent):
 	
 	def choose_action(self, action):
 		if action == 0:
-			state = np.array(self.state).reshape((1, 13 ,1))
+			state = np.array(self.state).reshape((1, 15 ,1))
 			t_score = self.model.terror_score
 			agents = self.model.get_same_square_agents(self.pos[0], self.pos[1])
 			deaths = np.array([1,2])#,3,4,5,6,7,8,9,10,25])
@@ -76,10 +77,11 @@ class TerroristAgent(Agent):
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			t_score_ = self.model.terror_score
-			state_ = np.array([self.gender, self.religion, 0, 0, 0, 0, 0, 0, self.model.terror_score, self.model.civilian_score, self.model.get_agent_count('Terrorist'), 
+			state_ = np.array([self.gender, self.religion, 0, 0, 0, 0, 0, 0, self.model.terror_score, self.model.civilian_score,
+						self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'),
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')])
 			self.state = state_
-			state_ = state_.reshape((1,13,1))
+			state_ = state_.reshape((1,15,1))
 			if t_score >= t_score_:
 				reward = -1
 			else:
@@ -90,7 +92,7 @@ class TerroristAgent(Agent):
 			Remove a random number of agents on this square from the schedule
 			'''
 		elif action == 1:
-			state = np.array(self.state).reshape((1, 13, 1))
+			state = np.array(self.state).reshape((1, 15, 1))
 			t_score = self.model.terror_score
 			agents = self.model.get_same_square_type_agents(self.pos[0], self.pos[1], 'Civilian')
 			if len(agents) > 0:
@@ -103,10 +105,10 @@ class TerroristAgent(Agent):
 			t_score_ = self.model.terror_score
 			state_ = np.array([self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
 						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
-						self.model.civilian_score, self.model.get_agent_count('Terrorist'), 
+						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')])
 			self.state = state_
-			state_ = state_.reshape((1, 13, 1))
+			state_ = state_.reshape((1, 15, 1))
 			if t_score >= t_score_:
 				reward = -1
 			else:
@@ -118,7 +120,7 @@ class TerroristAgent(Agent):
 			'''
 		elif action == 2:
 			reward = 0
-			state = np.array(self.state).reshape((1, 13, 1))
+			state = np.array(self.state).reshape((1, 15, 1))
 			t_score = self.model.terror_score
 			mil_neighbors = self.model.get_neighbor_type(self, 'Military')
 			civ_neighbors = self.model.get_neighbor_type(self, 'Civilian')
@@ -140,10 +142,10 @@ class TerroristAgent(Agent):
 			t_score_ = self.model.terror_score
 			state_ = np.array([self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
 						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
-						self.model.civilian_score, self.model.get_agent_count('Terrorist'), 
+						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')])
 			self.state = state_
-			state_ = state_.reshape((1, 13, 1))
+			state_ = state_.reshape((1, 15, 1))
 			if t_score >= t_score_:
 				reward += -1
 			else:
@@ -155,21 +157,22 @@ class TerroristAgent(Agent):
 			5% chance to kill civilian
 			'''
 		elif action == 3:
-			state = np.array(self.state).reshape((1, 13, 1))
+			state = np.array(self.state).reshape((1, 15, 1))
 			t_score = self.model.terror_score
 			agents = self.model.get_agent_list('Military')
-			nearest = self.model.find_nearest_agent(self, agents)
-			x, y = self.model.move_toward_nearest(self, nearest)
-			self.model.grid.move_agent(self, (self.pos[0]+x, self.pos[1]+y))
+			if len(agents) > 0:
+				nearest = self.model.find_nearest_agent(self, agents)
+				x, y = self.model.move_toward_nearest(self, nearest)
+				self.model.grid.move_agent(self, (self.pos[0]+x, self.pos[1]+y))
 			self.model.set_terror_score()
 			self.model.set_civil_score()
 			t_score_ = self.model.terror_score
 			state_ = np.array([self.gender, self.religion, self.agr_bhv, self.rel_fnt, self.rel_conv,
 						self.hst_twd_for, self.lvl_rct_act, self.crt_agr_lvl, self.model.terror_score,
-						self.model.civilian_score, self.model.get_agent_count('Terrorist'), 
+						self.model.civilian_score, self.pos[0], self.pos[1], self.model.get_agent_count('Terrorist'), 
 						self.model.get_agent_count('Civilian'), self.model.get_agent_count('Military')])
 			self.state = state_
-			state_ = state_.reshape((1, 13, 1))
+			state_ = state_.reshape((1, 15, 1))
 			if t_score >= t_score_:
 				reward = -1
 			else:
@@ -178,3 +181,5 @@ class TerroristAgent(Agent):
 			'''
 			Find the nearest military agent and move toward.
 			'''
+		elif action == 4:
+			pass

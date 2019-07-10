@@ -22,16 +22,16 @@ class MapModel(Model):
 	
 	def __init__(self, density=.1, height=50, width=50, map_size="Large", troop_size=10000,
 				t_hive=HiveMindTer(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 13, 1),
-								n_actions=4, mem_size=4000, batch_size=1),
+								n_actions=5, mem_size=4000, batch_size=1),
 				m_hive=HiveMindMil(gamma=0.99, epsilon=1.0, alpha=0.00025, input_dims=(1, 5, 1),
-								n_actions=3, mem_size=4000, batch_size=1)):
+								n_actions=4, mem_size=4000, batch_size=1)):
 
 		self.height = height
 		self.width = width
 		self.density = density
 		self.map_size = map_size
 		self.gen_agents = GenAgents()
-		self.load_checkpoints = True
+		self.load_checkpoints = False
 		
 		self.schedule = RandomActivation(self)
 		self.grid = MultiGrid(height, width, False)
@@ -173,7 +173,7 @@ class MapModel(Model):
 			self.metro_loc = {"X": 25, "Y": 25}
 			self.city1_loc = {"X": 20, "Y": 20}
 			self.city2_loc = {"X": 45, "Y": 25}
-			self.basecamp_loc = {"X": 45, "Y": 10}
+			self.basecamp_loc = {"X": 30, "Y": 20}
 			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
 			self.metro_c_agents = self.gen_agents.generate_civ_agents(self.metro_civ)
 			self.city1_t_agents = self.gen_agents.generate_ter_agents(self.city_ter)
@@ -223,7 +223,7 @@ class MapModel(Model):
 			#self.height = 20
 			#self.width = 20
 			self.metro_loc = {"X": 25, "Y": 25}
-			self.basecamp_loc = {"X": 45, "Y": 10}
+			self.basecamp_loc = {"X": 30, "Y": 20}
 			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)
 			self.metro_c_agents = self.gen_agents.generate_civ_agents(self.metro_civ)
 			self.basecamp_agents = self.gen_agents.generate_mil_agents(self.troop_size)
@@ -258,9 +258,10 @@ class MapModel(Model):
 		self.set_civil_score()
 
 		self.running = True
+		print(self.t_epsilon, self.m_epsilon)
 
 	def step(self):
-		if self.schedule.steps < 100 or self.get_agent_count('Terrorist') >= 1:
+		if self.get_agent_count('Terrorist') >= 1:
 			self.schedule.step()
 			self.t_epsilon = self.t_hive.epsilon
 			self.m_epsilon = self.m_hive.epsilon
@@ -270,6 +271,8 @@ class MapModel(Model):
 				self.m_hive.save_models()
 		else:
 			self.running = False
+			
+		print(self.t_epsilon, self.m_epsilon)
 
 	def get_agent_count(self, type):
 		count = 0
