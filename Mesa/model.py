@@ -53,11 +53,11 @@ class MapModel(Model):
 		self.t_epsilon = self.t_hive.epsilon
 		self.m_epsilon = self.m_hive.epsilon
 		
-		self.metro_size = 10#000
+		self.metro_size = 10000
 		self.metro_civ = int(self.metro_size * (1 - self.density))
 		self.metro_ter = int(self.metro_size * self.density)
 		
-		self.city_size = 10#00
+		self.city_size = 1000
 		self.city_civ = int(self.city_size * (1 - self.density))
 		self.city_ter = int(self.city_size * self.density)
 		
