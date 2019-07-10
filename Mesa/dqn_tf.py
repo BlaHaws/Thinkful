@@ -55,10 +55,10 @@ class DeepQNetwork(object):
 			
 			self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
 			
-		def load_checkpoint(self):
+	def load_checkpoint(self):
 			print('... loading checkpoint ...')
 			self.saver.restore(self.sess, self.checkpoint_file)
 			
-		def save_checkpoint(self):
+	def save_checkpoint(self):
 			print('... saving checkpoint ...')
 			self.saver.save(self.sess, self.checkpoint_file)

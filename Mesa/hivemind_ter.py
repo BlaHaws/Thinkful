@@ -1,10 +1,11 @@
 from dqn_tf import DeepQNetwork
+import tensorflow as tf
 import os
 import numpy as np
 
 class HiveMindTer(object):
 	def __init__(self, alpha, gamma, mem_size, n_actions, epsilon, 
-				batch_size, replace_target=5000, input_dims=(1,10,1), 
+				batch_size, replace_target=5000, input_dims=(5), 
 				q_next_dir='tmp/ter/q_next', q_eval_dir='tmp/ter/q_eval'):
 		
 		self.n_actions = n_actions
@@ -52,21 +53,22 @@ class HiveMindTer(object):
 		batch = np.random.choice(max_mem, self.batch_size)
 		state_batch = self.state_memory[batch]
 		action_batch = self.action_memory[batch]
-		action_values = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=int8)
+		action_values = np.array([0, 1, 2, 3], dtype=np.int8)
 		action_indices = np.dot(action_batch, action_values)
 		reward_batch = self.reward_memory[batch]
+		new_state_batch = self.new_state_memory[batch]
 		
 		q_eval = self.q_eval.sess.run(self.q_eval.Q_values,
 							feed_dict={self.q_eval.input: state_batch})
 		q_next = self.q_next.sess.run(self.q_next.Q_values,
-							fedd_dict={self.q_next.input: new_state_batch})
+							feed_dict={self.q_next.input: new_state_batch})
 							
 		q_target = q_eval.copy()
 		q_target[:, action_indices] = reward_batch + \
 				self.gamma*np.max(q_next, axis=1)
 				
 		_ = self.q_eval.sess.run(self.q_eval.train_op,
-								fedd_dict={self.q_eval.input: state_batch,
+								feed_dict={self.q_eval.input: state_batch,
 											self.q_eval.actions: action_batch,
 											self.q_eval.q_target: q_target})
 											
