@@ -166,6 +166,7 @@ class MapModel(Model):
 			del self.outpost_agents
 			
 		elif self.map_size == "Medium":
+			self.basecamp = self.troop_size
 			self.metro_loc = {"X": 25, "Y": 25}
 			self.city1_loc = {"X": 20, "Y": 20}
 			self.city2_loc = {"X": 45, "Y": 25}
@@ -216,6 +217,7 @@ class MapModel(Model):
 			del self.basecamp_agents
 			
 		elif self.map_size == "Small":
+			self.basecamp = self.troop_size
 			self.metro_loc = {"X": 25, "Y": 25}
 			self.basecamp_loc = {"X": 30, "Y": 20}
 			self.metro_t_agents = self.gen_agents.generate_ter_agents(self.metro_ter)

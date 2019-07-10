@@ -46,7 +46,7 @@ def get_model_params():
 	troop_size = UserSettableParameter("number", "Troop size", 10000)
 	
 	model_params = {"height": height, "width": width, "density": density, "map_size": map_size, "troop_size": troop_size}
-	#print(map_size.value)
+	print(map_size.value)
 	return model_params
 
 def mapmodel_draw(agent):
