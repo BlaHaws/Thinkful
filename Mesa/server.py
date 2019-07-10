@@ -9,7 +9,7 @@ class CCountElement(TextElement):
 		pass
 	
 	def render(self, model):
-		return "# of Civilians: " + str(model.get_agent_count('Civilian'))
+		return "# of Civilians: " + str(model.get_agent_count('Civilian') + " Terror Score: " + str(model.terror_score))
 		
 
 class TCountElement(TextElement):
@@ -17,7 +17,7 @@ class TCountElement(TextElement):
 		pass
 	
 	def render(self, model):
-		return "# of Terrorists: " + str(model.get_agent_count('Terrorist'))
+		return "# of Terrorists: " + str(model.get_agent_count('Terrorist') + " Civil Score: " + str(model.civilian_score))
 		
 class MCountElement(TextElement):
 	def __init__(self):

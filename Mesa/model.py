@@ -260,6 +260,8 @@ class MapModel(Model):
 	def step(self):
 		if self.schedule.steps < 100:
 			self.schedule.step()
+			self.t_epsilon = self.t_hive.epsilon
+			self.m_epsilon = self.m_hive.epsilon
 			self.datacollector.collect(self)
 			if self.schedule.steps % 5 == 0:
 				self.t_hive.save_models()

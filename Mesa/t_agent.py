@@ -28,7 +28,7 @@ class TerroristAgent(Agent):
 	def step(self):
 		self.grow()
 		if not self.wounded:
-			self.choose_action(self.model.t_hive.choose_action(np.array(self.state).reshape((1, 13, 1))))
+			self.choose_action(self.model.t_hive.choose_action(np.expand_dims(np.array(self.state).reshape((1, 13, 1)), 1)))
 		else:
 			if self.wounded_count > 0:
 				self.wounded_count -= 1
