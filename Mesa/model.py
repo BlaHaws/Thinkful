@@ -31,7 +31,7 @@ class MapModel(Model):
 		self.density = density
 		self.map_size = map_size
 		self.gen_agents = GenAgents()
-		self.load_checkpoints = False
+		self.load_checkpoints = True
 		
 		self.schedule = RandomActivation(self)
 		self.grid = MultiGrid(height, width, False)
